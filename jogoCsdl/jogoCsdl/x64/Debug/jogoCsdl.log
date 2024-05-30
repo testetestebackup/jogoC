@@ -1,0 +1,3 @@
+﻿  jogoCsdl.c
+C:\Users\SAÚDE-23\source\repos\jogoCsdl\jogoCsdl.c(89,11): warning C4244: 'função': conversão de 'time_t' para 'unsigned int', possível perda de dados
+  jogoCsdl.vcxproj -> C:\Users\SAÚDE-23\source\repos\jogoCsdl\x64\Debug\jogoCsdl.exe
