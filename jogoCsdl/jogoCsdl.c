@@ -4,18 +4,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define GRID_SIZE 50
 #define GRID_WIDTH (SCREEN_WIDTH / GRID_SIZE)
 #define GRID_HEIGHT (SCREEN_HEIGHT / GRID_SIZE)
 
-
 #define TELA_INICIAL 0
 #define TELA_JOGO 1
 #define TELA_GAMEOVER 2
-
 
 typedef struct {
     int x, y;
@@ -31,12 +28,11 @@ typedef struct {
     Point position;
 } Food;
 
-//GLOBAIS --------------
+// Globais
 int pontos = 0; // Contador de pontos
 int estadoJogo = TELA_INICIAL;
 TTF_Font* font; // Variável global para armazenar a fonte
 SDL_Rect pontuacaoRect;
-
 
 void initSnake(Snake* snake) {
     snake->length = 1;
@@ -83,8 +79,6 @@ int checkCollision(Snake* snake) {
     return 0;
 }
 
-
-//main
 int main(int argc, char* argv[]) {
     srand(time(NULL));
 
@@ -131,17 +125,118 @@ int main(int argc, char* argv[]) {
     Food food;
     initFood(&food, &snake);
 
-    //ONDE MUDA MENU
     int jogoRodando = 1;
     SDL_Event e;
+
+    SDL_Color corBranca = { 255, 255, 255, 255 };
+
     while (jogoRodando) {
-        switch (estadoJogo) {
-        case TELA_INICIAL:
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) {
+                jogoRodando = 0;
+            }
+            if (e.type == SDL_KEYDOWN) {
+                if (estadoJogo == TELA_INICIAL) {
+                    estadoJogo = TELA_JOGO;
+                }
+                else if (estadoJogo == TELA_GAMEOVER && e.key.keysym.sym == SDLK_r) {
+                    estadoJogo = TELA_JOGO;
+                    pontos = 0; // Reiniciar a contagem de pontos
+                    initSnake(&snake); // Reiniciar a cobra
+                    initFood(&food, &snake); // Reiniciar a comida
+                }
+                else {
+                    switch (e.key.keysym.sym) {
+                    case SDLK_UP:
+                        if (snake.direction.y == 0) {
+                            snake.direction.x = 0;
+                            snake.direction.y = -1;
+                        }
+                        break;
+                    case SDLK_DOWN:
+                        if (snake.direction.y == 0) {
+                            snake.direction.x = 0;
+                            snake.direction.y = 1;
+                        }
+                        break;
+                    case SDLK_LEFT:
+                        if (snake.direction.x == 0) {
+                            snake.direction.x = -1;
+                            snake.direction.y = 0;
+                        }
+                        break;
+                    case SDLK_RIGHT:
+                        if (snake.direction.x == 0) {
+                            snake.direction.x = 1;
+                            snake.direction.y = 0;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (estadoJogo == TELA_JOGO) {
+            moveSnake(&snake);
+
+            if (snake.body[0].x == food.position.x && snake.body[0].y == food.position.y) {
+                snake.length++;
+                pontos++; // Incrementa o contador de pontos
+                initFood(&food, &snake);
+            }
+
+            if (checkCollision(&snake)) {
+                estadoJogo = TELA_GAMEOVER;
+            }
+
+            // Limpar a tela com cor preta
+            SDL_SetRenderDrawColor(renderizador, 0, 0, 0, 255);
+            SDL_RenderClear(renderizador);
+
+            // Desenhar a cobra com cor
+            SDL_SetRenderDrawColor(renderizador, 0, 255, 0, 255);
+            for (int i = 0; i < snake.length; i++) {
+                SDL_Rect retangulo = { snake.body[i].x * GRID_SIZE, snake.body[i].y * GRID_SIZE, GRID_SIZE, GRID_SIZE };
+                SDL_RenderFillRect(renderizador, &retangulo);
+            }
+
+            // Desenhar a comida com cor
+            SDL_SetRenderDrawColor(renderizador, 255, 0, 0, 255);
+            SDL_Rect foodRect = { food.position.x * GRID_SIZE, food.position.y * GRID_SIZE, GRID_SIZE, GRID_SIZE };
+            SDL_RenderFillRect(renderizador, &foodRect);
+
+            // Exibir o contador de pontos
+            char texto[20];
+            sprintf_s(texto, 20, "Pontos: %d", pontos);
+            SDL_Surface* surface = TTF_RenderText_Solid(font, texto, corBranca);
+            if (!surface) {
+                printf("Erro ao criar superfície de texto: %s\n", TTF_GetError());
+                return 1;
+            }
+            SDL_Texture* texture = SDL_CreateTextureFromSurface(renderizador, surface);
+            if (!texture) {
+                printf("Erro ao criar textura de texto: %s\n", SDL_GetError());
+                SDL_FreeSurface(surface);
+                return 1;
+            }
+            SDL_FreeSurface(surface);
+
+            // Renderizar a textura do contador de pontos
+            pontuacaoRect.x = 10; // Definir a posição X
+            pontuacaoRect.y = 10; // Definir a posição Y
+            SDL_QueryTexture(texture, NULL, NULL, &pontuacaoRect.w, &pontuacaoRect.h);
+            SDL_RenderCopy(renderizador, texture, NULL, &pontuacaoRect);
+            SDL_DestroyTexture(texture);
+
+            SDL_RenderPresent(renderizador);
+
+            SDL_Delay(100);
+        }
+        else if (estadoJogo == TELA_INICIAL) {
             SDL_SetRenderDrawColor(renderizador, 0, 0, 0, 255);
             SDL_RenderClear(renderizador);
 
             // Exibir mensagem de boas-vindas
-            SDL_Color corBranca = { 255, 255, 255, 255 };
             char mensagemInicial[50] = "Pressione qualquer tecla para começar";
             SDL_Surface* surfaceInicial = TTF_RenderText_Solid(font, mensagemInicial, corBranca);
             if (!surfaceInicial) {
@@ -163,113 +258,8 @@ int main(int argc, char* argv[]) {
             SDL_DestroyTexture(textureInicial);
 
             SDL_RenderPresent(renderizador);
-
-            // Mudar para o estado de jogo quando uma tecla for pressionada
-            if (e.type == SDL_KEYDOWN) {
-                estadoJogo = TELA_JOGO;
-            }
-
-            break;
-
-        case TELA_JOGO:
-
-            while (jogoRodando) {
-                while (SDL_PollEvent(&e)) {
-                    if (e.type == SDL_QUIT) {
-                        jogoRodando = 0;
-                    }
-                    if (e.type == SDL_KEYDOWN) {
-                        switch (e.key.keysym.sym) {
-                        case SDLK_UP:
-                            if (snake.direction.y == 0) {
-                                snake.direction.x = 0;
-                                snake.direction.y = -1;
-                            }
-                            break;
-                        case SDLK_DOWN:
-                            if (snake.direction.y == 0) {
-                                snake.direction.x = 0;
-                                snake.direction.y = 1;
-                            }
-                            break;
-                        case SDLK_LEFT:
-                            if (snake.direction.x == 0) {
-                                snake.direction.x = -1;
-                                snake.direction.y = 0;
-                            }
-                            break;
-                        case SDLK_RIGHT:
-                            if (snake.direction.x == 0) {
-                                snake.direction.x = 1;
-                                snake.direction.y = 0;
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                moveSnake(&snake);
-
-                if (snake.body[0].x == food.position.x && snake.body[0].y == food.position.y) {
-                    snake.length++;
-                    pontos++; // Incrementa o contador de pontos
-                    initFood(&food, &snake);
-                }
-
-                if (checkCollision(&snake)) {
-                    jogoRodando = 0;
-                }
-
-                // Limpar a tela com cor preta
-                SDL_SetRenderDrawColor(renderizador, 0, 0, 0, 255);
-                SDL_RenderClear(renderizador);
-
-                // Desenhar a cobra com cor 
-                SDL_SetRenderDrawColor(renderizador, 0, 255, 0, 255);
-                for (int i = 0; i < snake.length; i++) {
-                    SDL_Rect retangulo = { snake.body[i].x * GRID_SIZE, snake.body[i].y * GRID_SIZE, GRID_SIZE, GRID_SIZE };
-                    SDL_RenderFillRect(renderizador, &retangulo);
-                }
-
-                // Desenhar a comida com cor
-                SDL_SetRenderDrawColor(renderizador, 255, 0, 0, 255);
-                SDL_Rect foodRect = { food.position.x * GRID_SIZE, food.position.y * GRID_SIZE, GRID_SIZE, GRID_SIZE };
-                SDL_RenderFillRect(renderizador, &foodRect);
-
-                // Exibir o contador de pontos
-                SDL_Color corBranca = { 255, 255, 255, 255 };
-                char texto[20];
-                sprintf_s(texto, 20, "Pontos: %d", pontos);
-                SDL_Surface* surface = TTF_RenderText_Solid(font, texto, corBranca);
-                if (!surface) {
-                    printf("Erro ao criar superfície de texto: %s\n", TTF_GetError());
-                    return 1;
-                }
-                SDL_Texture* texture = SDL_CreateTextureFromSurface(renderizador, surface);
-                if (!texture) {
-                    printf("Erro ao criar textura de texto: %s\n", SDL_GetError());
-                    SDL_FreeSurface(surface);
-                    return 1;
-                }
-                SDL_FreeSurface(surface);
-
-                // Renderizar a textura do contador de pontos
-                pontuacaoRect.x = 10; // Definir a posição X
-                pontuacaoRect.y = 10; // Definir a posição Y
-                SDL_QueryTexture(texture, NULL, NULL, &pontuacaoRect.w, &pontuacaoRect.h);
-                SDL_RenderCopy(renderizador, texture, NULL, &pontuacaoRect);
-                SDL_DestroyTexture(texture);
-
-                SDL_RenderPresent(renderizador);
-
-                SDL_Delay(100);
-            }
-
-            break;
-
-
-        case TELA_GAMEOVER:
-
+        }
+        else if (estadoJogo == TELA_GAMEOVER) {
             // Limpar a tela com cor preta
             SDL_SetRenderDrawColor(renderizador, 0, 0, 0, 255);
             SDL_RenderClear(renderizador);
@@ -317,22 +307,13 @@ int main(int argc, char* argv[]) {
             SDL_DestroyTexture(textureGameOver);
 
             SDL_RenderPresent(renderizador);
-
-            // Mudar para o estado de jogo quando a tecla 'R' for pressionada
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_r) {
-                estadoJogo = TELA_JOGO;
-                pontos = 0; // Reiniciar a contagem de pontos
-                initSnake(&snake); // Reiniciar a cobra
-                initFood(&food, &snake); // Reiniciar a comida
-            }
-
-            break;
-
         }
     }
 
+    TTF_CloseFont(font); // Fechar a fonte
     SDL_DestroyRenderer(renderizador);
     SDL_DestroyWindow(janela);
+    TTF_Quit();
     SDL_Quit();
 
     return 0;

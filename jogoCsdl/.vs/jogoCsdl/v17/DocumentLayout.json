@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoCsdl\\",
+  "WorkspaceRootPath": "C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoC\\jogoCsdl\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{EDD4BC28-FA7F-4C03-8956-EAA54245EE71}|jogoCsdl.vcxproj|C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoCsdl\\jogoCsdl.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{EDD4BC28-FA7F-4C03-8956-EAA54245EE71}|jogoCsdl.vcxproj|C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoC\\jogoCsdl\\jogoCsdl.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{EDD4BC28-FA7F-4C03-8956-EAA54245EE71}|jogoCsdl.vcxproj|solutionrelative:jogoCsdl.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -20,11 +20,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "jogoCsdl.c",
-              "DocumentMoniker": "C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoCsdl\\jogoCsdl.c",
+              "DocumentMoniker": "C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoC\\jogoCsdl\\jogoCsdl.c",
               "RelativeDocumentMoniker": "jogoCsdl.c",
-              "ToolTip": "C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoCsdl\\jogoCsdl.c",
+              "ToolTip": "C:\\Users\\SA\u00DADE-23\\source\\repos\\jogoC\\jogoCsdl\\jogoCsdl.c",
               "RelativeToolTip": "jogoCsdl.c",
-              "ViewState": "AQIAACABAAAAAAAAAAAAAD8BAAAAAAAA",
+              "ViewState": "AQIAAP4AAAAAAAAAAAAAAA8BAABSAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2024-05-30T16:36:52.183Z",
               "EditorCaption": ""
