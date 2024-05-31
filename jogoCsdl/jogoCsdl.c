@@ -237,10 +237,10 @@ int main(int argc, char* argv[]) {
             SDL_RenderClear(renderizador);
 
             // Exibir mensagem de boas-vindas
-            char mensagemInicial[50] = "Pressione qualquer tecla para começar";
+            char mensagemInicial[50] = "Pressione qualquer tecla para comecar";
             SDL_Surface* surfaceInicial = TTF_RenderText_Solid(font, mensagemInicial, corBranca);
             if (!surfaceInicial) {
-                printf("Erro ao criar superfície de texto: %s\n", TTF_GetError());
+                printf("Erro ao criar superficie de texto: %s\n", TTF_GetError());
                 return 1;
             }
             SDL_Texture* textureInicial = SDL_CreateTextureFromSurface(renderizador, surfaceInicial);
@@ -266,7 +266,7 @@ int main(int argc, char* argv[]) {
 
             // Exibir pontuação do jogador
             char mensagemPontuacao[50];
-            sprintf_s(mensagemPontuacao, 50, "Pontuação: %d", pontos);
+            sprintf_s(mensagemPontuacao, 50, "Pontuacao: %d", pontos);
             SDL_Surface* surfacePontuacao = TTF_RenderText_Solid(font, mensagemPontuacao, corBranca);
             if (!surfacePontuacao) {
                 printf("Erro ao criar superfície de texto: %s\n", TTF_GetError());
@@ -289,7 +289,7 @@ int main(int argc, char* argv[]) {
             char mensagemGameOver[50] = "Pressione R para tentar novamente";
             SDL_Surface* surfaceGameOver = TTF_RenderText_Solid(font, mensagemGameOver, corBranca);
             if (!surfaceGameOver) {
-                printf("Erro ao criar superfície de texto: %s\n", TTF_GetError());
+                printf("Erro ao criar superficie de texto: %s\n", TTF_GetError());
                 return 1;
             }
             SDL_Texture* textureGameOver = SDL_CreateTextureFromSurface(renderizador, surfaceGameOver);
